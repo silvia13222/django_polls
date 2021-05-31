@@ -1,0 +1,7 @@
+[program:gunicorn]
+command=/usr/bin/gunicorn3 django_polls.wsgi:application --workers 3
+directory={{ install_root }}/{{ project_name }}
+user={{ ansible_user }}
+autostart=true
+autorestart=true
+redirect_stderr=true

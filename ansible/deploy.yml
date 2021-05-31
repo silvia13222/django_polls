@@ -21,6 +21,14 @@
       notify:
       - restart nginx
 
+    - name: Activate the domain via symbolic link 
+      file:
+        src: "/etc/nginx/sites-enabled/"
+        dest: "/etc/nginx/sites-available/{{ project_name }}.conf"
+        state: link
+      notify:
+      - restart nginx
+
     - name: Make executable
       file:
         path: "{{ install_root }}/{{ project_name }}/manage.py"
@@ -29,13 +37,8 @@
     - name: django migrate
       django_manage: command=migrate app_path={{ install_root }}/{{ project_name }}
 
-    - name: copy gunicorn socket
-      template: src=files/gunicorn.socket.j2 dest=/etc/systemd/system/gunicorn.socket
-      notify:
-      - restart gunicorn
-
-    - name: copy gunicorn service
-      template: src=files/gunicorn.service.j2 dest=/etc/systemd/system/gunicorn.service
+    - name: copy gunicorn config
+      template: src=files/gunicorn.j2 dest=/etc/supervisor/conf.d/gunicorn.conf
       notify:
       - restart gunicorn
 
@@ -50,5 +53,7 @@
       service: name=nginx state=restarted
 
     - name: restart gunicorn
-      service: name=gunicorn state=restarted
+      supervisorctl: 
+        name: gunicorn
+        state: restarted
 # vim:ft=ansible:
