@@ -1,5 +1,5 @@
-[program:gunicorn]
-command=/usr/bin/gunicorn3 django_polls.wsgi:application --workers 3
+[program:{{ supervisor_service }}]
+command=/usr/bin/gunicorn3 {{ wsgi_module }}:application --workers 3
 directory={{ install_root }}/{{ project_name }}
 user={{ ansible_user }}
 autostart=true

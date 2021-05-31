@@ -3,7 +3,7 @@
 project_name: django_polls
 
 # the base path to install to. You should not need to change this.
-install_root: /srv
+install_root: /ansible
 
 # the python module path to your project's wsgi file. E.g. for a directory
 # layout like this (assuming `django_polls` is the project_name and top level
@@ -35,7 +35,13 @@ pythonpath: "/usr/bin/python3"
 
 # the git repository URL for the project
 project_repo: git@github.com:aliciapj/django_polls.git
-    
+
+# fixture path for initial data load
+fixtures_file: fixtures/polls_data.json
+
+# fixture path for initial data load
+supervisor_service: django_polls-ansible
+
 # a private key that has access to the repository URL
 ssh_private_key: ~/.ssh/id_rsa
 

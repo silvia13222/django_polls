@@ -16,6 +16,17 @@
       notify:
       - restart gunicorn
 
+    - name: Make manage.py executable
+      file:
+        path: "{{ install_root }}/{{ project_name }}/manage.py"
+        mode: 0777
+
+    - name: django migrate
+      django_manage: command=migrate app_path={{ install_root }}/{{ project_name }}
+
+    - name: django load data
+      django_manage: command=loaddata app_path={{ install_root }}/{{ project_name }} fixtures={{ install_root }}/{{ project_name }}/{{ fixtures_file }}
+
     - name: copy nginx config
       template: src=files/nginx.j2 dest=/etc/nginx/sites-enabled/{{ project_name }}.conf
       notify:
@@ -29,16 +40,8 @@
       notify:
       - restart nginx
 
-    - name: Make executable
-      file:
-        path: "{{ install_root }}/{{ project_name }}/manage.py"
-        mode: 0777
-
-    - name: django migrate
-      django_manage: command=migrate app_path={{ install_root }}/{{ project_name }}
-
     - name: copy gunicorn config
-      template: src=files/gunicorn.j2 dest=/etc/supervisor/conf.d/gunicorn.conf
+      template: src=files/gunicorn.j2 dest=/etc/supervisor/conf.d/{{ supervisor_service }}.conf
       notify:
       - restart gunicorn
 
